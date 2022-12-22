@@ -1,26 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import AppLayout from './components/AppLayout';
+import PostCard from './components/PostCard';
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from './store/hooks';
+import { addPostsAPI } from './actions/post';
+import { useInView } from 'react-intersection-observer';
 
-function App() {
+export default function Home() {
+  const { ref, inView } = useInView({
+    threshold: 0,
+  });
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    if (inView) {
+      dispatch(addPostsAPI());
+    }
+  }, [inView, dispatch]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AppLayout>
+      <div>
+        <PostCard />
+      </div>
+      <div ref={ref}></div>
+    </AppLayout>
   );
 }
-
-export default App;
